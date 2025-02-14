@@ -63,7 +63,7 @@ def check_wordle():
 
 while True:
     now = datetime.datetime.now()
-    if (now.hour in [21, 22, 23]) and now.minute == 4:
+    if (now.hour in [21, 22, 23]) and now.minute == 0:
         check_wordle()
         time.sleep(60)
 
