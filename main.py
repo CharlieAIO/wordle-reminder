@@ -50,6 +50,7 @@ def check_wordle():
     puzzle = get_wordle_puzzle()
     puzzle_id = puzzle.get("id")
     if not puzzle_id:
+        print("No puzzle found")
         return
     stats = get_user_stats(puzzle_id)
     for state in stats["states"]:
@@ -62,8 +63,8 @@ def check_wordle():
 
 while True:
     now = datetime.datetime.now()
-    if (now.hour in [21, 22, 23]) and now.minute == 0:
+    if (now.hour in [21, 22, 23]) and now.minute == 4:
         check_wordle()
         time.sleep(60)
 
-    time.sleep(30)
+    time.sleep(15)
