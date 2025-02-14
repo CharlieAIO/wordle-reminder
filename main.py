@@ -29,7 +29,7 @@ def get_user_stats(puzzle_id: str):
 
 def send_reminder():
     payload = {
-        'content': '<@395923896039243788>',
+        'content': '<@395923896039243788>', # Mention a user if you want using discord id.
         'embeds': [
             {
                 'title': 'Wordle Reminder',
