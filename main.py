@@ -3,20 +3,22 @@ import datetime
 import os
 import time
 from dotenv import load_dotenv
+import pytz
 
 load_dotenv()
 
 NYT_S_COOKIE = os.getenv("NYT_S_COOKIE")
 webhook_url = os.getenv("WEBHOOK_URL")
 
+SERVER_TZ = pytz.timezone("America/Toronto") 
+LOCAL_TZ = pytz.timezone("Etc/GMT")
 
 def get_wordle_puzzle():
-    today = datetime.datetime.now()
+    today = datetime.datetime.now(LOCAL_TZ)
     formatted_data = today.strftime("%Y-%m-%d")
     url = f"https://www.nytimes.com/svc/wordle/v2/{formatted_data}.json"
     response = requests.get(url)
     return response.json()
-
 
 def get_user_stats(puzzle_id: str):
     url = f"https://www.nytimes.com/svc/games/state/wordleV2/latests?puzzle_ids={puzzle_id}"
@@ -26,10 +28,9 @@ def get_user_stats(puzzle_id: str):
     response = requests.get(url, headers=headers)
     return response.json()
 
-
 def send_reminder():
     payload = {
-        'content': '<@395923896039243788>', # Mention a user if you want using discord id.
+        'content': '<@395923896039243788>',  # Mention a user if you want using discord id.
         'embeds': [
             {
                 'title': 'Wordle Reminder',
@@ -45,7 +46,6 @@ def send_reminder():
     else:
         print(f'Failed to send reminder: {response.status_code}, {response.text}')
 
-
 def check_wordle():
     puzzle = get_wordle_puzzle()
     puzzle_id = puzzle.get("id")
@@ -60,10 +60,10 @@ def check_wordle():
             if not has_completed:
                 send_reminder()
 
-
 while True:
-    now = datetime.datetime.now()
-    if (now.hour in [21, 22, 23]) and now.minute == 0:
+    now = datetime.datetime.now(SERVER_TZ)
+    now_local = now.astimezone(LOCAL_TZ)
+    if (now_local.hour in [21, 22, 23]) and now_local.minute == 0:
         check_wordle()
         time.sleep(60)
 
